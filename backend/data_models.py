@@ -10,10 +10,18 @@ embedding_model = get_registry().get("gemini-text").create(name= "gemini-embeddi
 EMBEDDINNG_DIM = 3072
 
 
-class YoutubeScript(LanceModel):
+class TranScript(LanceModel):
     doc_id: str
     filepath: str 
     filename: str = Field(description="the stem of the file, i. e without the suffix ")
     content: str = embedding_model.SourceField()
     embedding: Vector(EMBEDDINNG_DIM) = embedding_model.VectorField()
     
+
+class Prompt(BaseModel):
+    prompt: str = Field(description="prompt from user")
+    
+class RagResponse(BaseModel):
+    filename: str = Field(description="filename of retrieved filepath without suffix")
+    filepath: str = Field(description= "absolute path to retrieved file")
+    answer: str = Field(description="answer based retrieved file")

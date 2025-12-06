@@ -15,4 +15,5 @@ dependencies = [
     "pydantic>=2.12.5",
     "pydantic-ai>=1.26.0",
     "python-dotenv>=1.2.1",
+    "streamlit>=1.52.1",
 ]
