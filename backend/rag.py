@@ -1,7 +1,7 @@
 from pydantic_ai import Agent
-from backend.data_models import RagResponse
+from .data_models import RagResponse
 import lancedb
-from backend.constants import VECTOR_DB_PATH
+from .constants import VECTOR_DB_PATH
 
 vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 

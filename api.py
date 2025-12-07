@@ -5,7 +5,7 @@ from backend.rag import rag_agent
 app = FastAPI()
 
 @app.post("/rag/query")
-async def query_yotubescript(query:Prompt):
+async def query_youtubescript(query:Prompt):
     result =await rag_agent.run(query.prompt)
     return result.output 
     
