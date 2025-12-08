@@ -1,16 +1,19 @@
 import streamlit as st 
-from backend.data_models import RagResponse
 import requests
+import os 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# url = f"https://rg-chatbot-de24.azurewebsites.net/rag/query?code={os.getenv('FUNCTION_APP_API')}"
+
+BACKEND_URL = os.getenv("BACKEND_URL")
 
 def init_message_state():
     
     if 'messages' not in st.session_state:
         st.session_state.messages = []
         
-    if "bot" not in st.session_state:
-        st.session_state.bot = RagResponse
-
-
 def display_chat_message():
     
     for message in st.session_state.messages:
@@ -24,10 +27,13 @@ def handle_user_messager():
             
         st.session_state.messages.append({"role": "user", "content": prompt})
         
-        response = requests.post(url= "http://127.0.0.1:8000/rag/query", json={"prompt": prompt})
+        response = requests.post(BACKEND_URL, json={"prompt": prompt})
+        
+        st.write("Status code:", response.status_code)
         
         data = response.json()
         
+        st.write("Raw data:", data)
         assistant_answer = data["answer"]
         
         with st.chat_message("assistant"):
