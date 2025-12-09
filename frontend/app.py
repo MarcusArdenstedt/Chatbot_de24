@@ -5,9 +5,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# url = f"https://rg-chatbot-de24.azurewebsites.net/rag/query?code={os.getenv('FUNCTION_APP_API')}"
+url = f"https://rg-chatbot-de24.azurewebsites.net/rag/query?code={os.getenv('FUNCTION_APP_API')}"
 
-BACKEND_URL = os.getenv("BACKEND_URL")
+# BACKEND_URL = os.getenv("BACKEND_URL")
 
 def init_message_state():
     
@@ -27,13 +27,10 @@ def handle_user_messager():
             
         st.session_state.messages.append({"role": "user", "content": prompt})
         
-        response = requests.post(BACKEND_URL, json={"prompt": prompt})
-        
-        st.write("Status code:", response.status_code)
+        response = requests.post(url, json={"prompt": prompt})
         
         data = response.json()
         
-        st.write("Raw data:", data)
         assistant_answer = data["answer"]
         
         with st.chat_message("assistant"):
