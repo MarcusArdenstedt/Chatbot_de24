@@ -3,6 +3,9 @@ from .data_models import RagResponse
 import lancedb
 from .constants import VECTOR_DB_PATH
 
+# from dotenv import load_dotenv
+# load_dotenv()
+
 vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
 rag_agent = Agent(

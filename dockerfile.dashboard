@@ -1,6 +1,6 @@
 FROM python:3.11
 
-ENV BACKEND_URL=http://host.docker.internal:8000/rag/query
+# ENV BACKEND_URL=http://host.docker.internal:8000/rag/query
 
 WORKDIR /dashboard
 
