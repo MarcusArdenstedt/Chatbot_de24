@@ -5,16 +5,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# url = f"https://rg-chatbot-de24.azurewebsites.net/rag/query?code={os.getenv('FUNCTION_APP_API')}"
+# url = "http://127.0.0.1:8000/rag/query"
+
+# This use when frontend are deployed
+
 
 BACKEND_URL = os.getenv("BACKEND_URL")
-
-
 
 def init_message_state():
     
     if 'messages' not in st.session_state:
         st.session_state.messages = []
+    
         
 def display_chat_message():
     
@@ -29,7 +31,8 @@ def handle_user_messager():
             
         st.session_state.messages.append({"role": "user", "content": prompt})
         
-        response = requests.post(BACKEND_URL, json={"prompt": prompt})
+        response = requests.post(BACKEND_URL, json={"prompt": prompt,
+                                "history": st.session_state.messages})
         
         data = response.json()
         
@@ -48,9 +51,6 @@ def layout():
     display_chat_message()
     handle_user_messager()
 
-    if not BACKEND_URL:
-        st.write("BACKEND_URL: är inte satt i miljön")
-        raise RuntimeError("BACKEND_URL sakans - Kolla Appsettings i Azure")
 if __name__=="__main__":
     
     init_message_state()
