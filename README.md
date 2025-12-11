@@ -65,7 +65,7 @@ Create classe with pydantic to perform datavalidation and dataparsing to secure 
 
 ***FastAPI and Azure Functions***
 
-FastAPI provides the API endpoints, and Azure Functions acts an HTTP proxy using AsgMiddleware to expose the FastAPI app public
+FastAPI defines the API endpoints, and Azure Functions run the application as a HTTP-trigger. With AsgiMiddleware adapt Azure Functions HTTP-request/response to FastAPI:s ASGI-interface, allowing the application to be exposed publicly.
 
 <br>
 
