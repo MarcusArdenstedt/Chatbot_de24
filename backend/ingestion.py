@@ -1,6 +1,6 @@
 import lancedb 
-from constants import DATA_PATH, VECTOR_DB_PATH
-from data_models import TranScript
+from .constants import DATA_PATH, VECTOR_DB_PATH
+from .data_models import TranScript
 from pathlib import Path
 import time 
 
@@ -37,6 +37,15 @@ def ingested_txt_to_vector_db(table_name):
         print(table_name.to_pandas()["filename"])
         time.sleep(20)
 
+    
+    
+def open_vector_database():
+    
+    vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
+    
+    table = vector_db.open_table("transcript")
+    
+    return table
     
     
 if __name__=="__main__":

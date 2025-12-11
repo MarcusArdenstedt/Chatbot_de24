@@ -7,7 +7,7 @@ from .constants import VECTOR_DB_PATH
 vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
 rag_agent = Agent(
-    model="google-gla:gemini-2.5-flash",
+    model="google-gla:gemini-2.0-flash",
     retries=3,
     system_prompt=(
         "You are an expert Data Engineering.",

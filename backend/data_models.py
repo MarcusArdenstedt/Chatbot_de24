@@ -1,11 +1,10 @@
 from pydantic import BaseModel, Field
+from typing import List, Optional
 from lancedb.embeddings import get_registry
 from lancedb.pydantic import LanceModel, Vector
 from dotenv import load_dotenv
 
 load_dotenv()
-
-
 
 embedding_model = get_registry().get("gemini-text").create(name= "gemini-embedding-001")
 
@@ -31,4 +30,11 @@ class History(BaseModel):
 
 class Prompt(BaseModel):
     prompt: str = Field(description="prompt from user")
+    history: Optional[List[History]]
     
+
+class YoutubeDescription(BaseModel):
+    doc_id: str = Field(description="Id for the video, is the same as filepath")
+    description: str = Field(description= "Short summaries for the video")
+    
+
