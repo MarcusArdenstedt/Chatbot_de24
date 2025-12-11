@@ -1,117 +1,83 @@
 # Chatbot for Data Engineer
 > This project is a chatbot design to answer question based on transcript from teachers YOUTUBE lectures in Data Engineer education program.
 
-## Source
-The transcript for this YouTube lecture are stored in this repository under the data directory. 
-You can browse them here: https://github.com/MarcusArdenstedt/Chatbot_de24/tree/main/data 
+## How to run
+- Install uv
+- Install dependencies
+- Convert data
+- Ingest embedding
+- Run API
+- Run frontend
 
-## Installation
 
-**This project uses uv for environment and package management**
+**Install dependecies**
+```
+   "azure-functions>=1.24.0",
+    "bs4>=0.0.2",
+    "fastapi>=0.123.8",
+    "google-generativeai>=0.8.5",
+    "ipykernel>=7.1.0",
+    "lancedb>=0.25.3",
+    "markdown>=3.10",
+    "pandas>=2.3.3",
+    "pydantic>=2.12.5",
+    "pydantic-ai>=1.26.0",
+    "python-dotenv>=1.2.1",
+    "streamlit>=1.52.1",
+    "uvicorn>=0.38.0",
+```
 
-1. Start by initialising uv in your project folder:
-   
-   Terminalen
-   ```
-   uv init
-   ```
+**Data flow**
+
+Youtube transcript -> markdown conver to text -> Embedding -> Lancedb (Vector database) -> FastAPI RAG-endpoint -> Azure Function Proxy -> Frontend (stremalit)
+
+
+***Embedding***
+
+Embedding is to defining table schema, enbedding is a numeric vector the capture the sematic meaning of the transcript and makes it possible for agent to do vector search.
+
+<br>
+
+<image src = "assets/embedding_defining.png" width = 300> 
+
+<br>
+
+***Rag Agent***
+
+- Create a RAG agent with pydnatic AI. Tool_plain decorater perform a vector search in lancedb for the use query and return top matching content.
+
+<br>
+
+<image src = "assets/rag_agent.png" width = 300>
+
+<br>
+
+<image src = "assets/tool_plain.png" width = 300>
+
+
+***Pydantic***
+
+Create classe with pydantic to perform datavalidation and dataparsing to secure datastructure.
+
+<br>
+
+<image src = "assets/pydantic.png" width = 300>  
+
+***FastAPI and Azure Functions***
+
+FastAPI provides the API endpoints, and Azure Functions acts an HTTP proxy using AsgMiddleware to expose the FastAPI app public
+
+<br>
+
+<image src = "assets/swagger_ui.png" width = 300>
+
+<br>
+
+***Frontend and Azure web app***
+
+- Build the Docker image for the frontend and push it to Azure container registry  
+- Update the API URL in streamlit frontend so it points to Azure Functions HTTP endpoin. This allows frontend to communicate with the backend through the Azure Functions HTTP proxy.
   
-2. Add the required dependencies:
-   
-   Terminalen
-   ```
-   uv add pydantic ipykernel pydantic-ai google-generativeai lancedb fastapi beautifulsoup4 markdown python-dotenv pandas uvicorn streamlit
-   ````
+<br>
 
-3. In pyproject.toml add:
-   ```
-   [build-system]
-   requires = ["setuptools >= 68", "wheel"]
-   build-backend = "setuptools.build_meta"
-
-   [tool.setuptools.packages.find]
-   where = ["."]
-   ```
-This will make it possible to build and distribute package in the project.
-
-
-## How to use the code
-
-### Create and ingest data to a vector database
-
-- Create a constants file under backend. Here create path to data and knowledge_base: https://github.com/MarcusArdenstedt/Chatbot_de24/blob/main/backend/constants.py
-  
-- Convert transcript from markdown file to text-file. Here's exemple: https://github.com/MarcusArdenstedt/Chatbot_de24/blob/main/backend/md_to_text.py
-  
-- Before ingest the text-file to knowledge_base you need to have embedding the text that ingest and defining table schema. An enbedding is a numeric vector tha capture the sematic meaning of the transcript and makes it possible for the agent to do vector search.
-
-<image src = "assets/embedding_defining.png" width= 300>
-
-- Ingestion the text-file to a vector database. Here's exemple: https://github.com/MarcusArdenstedt/Chatbot_de24/blob/main/backend/ingestion.py 
-
-### Testing Fast API with Swagger UI
-- Creating a RAG Agent with pydantic AI. Tool_plain decorator perform a vector search in lancedb for the user query and return top matching content to the agent.
-https://github.com/MarcusArdenstedt/Chatbot_de24/blob/main/backend/rag.py
-  
-- In the api.py create a fast API endpoint to call to RAG-agent, code exemple: <image src = "assets/post_endpoint.png" width=300>
-
-Initialize app with FastAPI(), then decorate it with GET-endpoint. async and await is just to make that computer dosen't need to wait for this function to be finish so the computer jumping back and forth until this is finish. Here you send in the prompt to RAG-agent and it will return the output. 
-
-- Testing in swagger
-  
-  Terminal
-  ```
-    uv run uvicorn api:app --reload
-    ```
-
-http://127.0.0.1:8000/docs in browser url and this is what will show:
-<image src = "assets/swagger_ui.png" width=300>
-
-And string is the prompt.
-
-### Function apps
-
-- Install [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=macos%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-csharp) on your computer
-
-- In extension install Azure Functions
-  <image src = "assets/azure_function_extension.png" width=300>
-
-- sign in with your azure subscription 
-- click on workspace and create a local project
-<image src = "assets/workspace.png" width=300>
-- Added this in your host.json
-  ```
-    "extensions": {
-    "http": {
-        "routePrefix": ""
-    }
-    ```
-- change the function_app.py to:
-  ```
-  import azure.functions as func
-  import api
-
-  app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
-
-  @app.route(route="{*route}", methods= ["GET", "POST", "PUT", "DELETE", "OPTIONS"])
-  async def fastapi_proxy(
-    req: func.HttpRequest, context: func.Context
-  ) -> func.HttpResponse:
-    return await func.AsgiMiddleware(api.app).handle_async(req, context)
-    ```
-- change the url in frontend/app.py, so it linked to azuer function
-- Deploy it to azure function.
-
-### Create web app 
-- Create resources container-registry, web-app-plan and web-app-server in the same resource group as function apps.
-- create a image for frontend and push it to Azure container registry
-- In Azure web-app create a environment variable with the same name you will have in frontend os.getenv(same-name)
-
-<image src = "assets/url.png" width=300>
-
-
-<image src = "assets/request_post.png" width=300>
-
-### End result
-
-
+<imag src = "assets/" width = 300>
