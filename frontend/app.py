@@ -5,10 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-url = "http://127.0.0.1:8000/rag/query"
-
-# This: use when frontend are deployed
-# BACKEND_URL = os.getenv("BACKEND_URL")
+BACKEND_URL = os.getenv("BACKEND_URL")
 
 def init_message_state():
     
@@ -29,7 +26,7 @@ def handle_user_messager():
             
         st.session_state.messages.append({"role": "user", "content": prompt})
         
-        response = requests.post(url, json={"prompt": prompt,
+        response = requests.post(BACKEND_URL, json={"prompt": prompt,
                                 "history": st.session_state.messages})
         
         data = response.json()

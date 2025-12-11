@@ -80,4 +80,8 @@ FastAPI provides the API endpoints, and Azure Functions acts an HTTP proxy using
   
 <br>
 
-<imag src = "assets/" width = 300>
+<image src = "assets/chatbot_1.png" width = 300>
+
+<br>
+
+<image src = "assets/ask_first_question.png" width = 300>
