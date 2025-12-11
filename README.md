@@ -29,7 +29,7 @@
 
 **Data flow**
 
-Youtube transcript -> markdown conver to text -> Embedding -> Lancedb (Vector database) -> FastAPI RAG-endpoint -> Azure Function Proxy -> Frontend (stremalit)
+Youtube transcript -> markdown convert to text -> Embedding -> Lancedb (Vector database) -> FastAPI RAG-endpoint -> Azure Function Proxy -> Frontend (stremalit)
 
 
 ***Embedding***
