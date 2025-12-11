@@ -44,7 +44,7 @@ Embedding is to defining table schema, enbedding is a numeric vector the capture
 
 ***Rag Agent***
 
-- Create a RAG agent with pydnatic AI. Tool_plain decorater perform a vector search in lancedb for the use query and return top matching content.
+Create a RAG agent with pydnatic AI. Tool_plain decorater perform a vector search in lancedb for the use query and return top matching content.
 
 <br>
 
