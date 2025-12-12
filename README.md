@@ -76,7 +76,7 @@ FastAPI defines the API endpoints, and Azure Functions run the application as a 
 ***Frontend and Azure web app***
 
 - Build the Docker image for the frontend and push it to Azure container registry  
-- Update the API URL in streamlit frontend so it points to Azure Functions HTTP endpoin. This allows frontend to communicate with the backend through the Azure Functions HTTP proxy.
+- Update the API URL in streamlit frontend so it points to Azure Functions HTTP endpoint. This allows frontend to communicate with the backend through the Azure Functions HTTP proxy.
   
 <br>
 

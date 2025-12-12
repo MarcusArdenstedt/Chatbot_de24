@@ -38,3 +38,4 @@ def retrieve_top_document(query: str, top_result = 3) -> str:
     Content: {result[0]["content"]}
     """
     
+
